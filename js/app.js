@@ -4,6 +4,52 @@
   const OFFICIAL = "https://raw.githubusercontent.com/LaQuay/TDTChannels/master/TELEVISION.md";
   const EPG_URL = "https://www.tdtchannels.com/epg/TV.json";
   const PRINCIPALES = new Set(["Generalistas", "Informativos", "Deportivos", "Infantiles"]);
+  const CA_GROUPS = new Set([
+    "C. de Madrid", "Castilla-La Mancha", "Castilla y León", "C. Valenciana",
+    "Cataluña", "Andalucía", "Aragón", "Canarias", "Cantabria", "Extremadura",
+    "Galicia", "Illes Balears", "La Rioja", "C. Foral de Navarra", "País Vasco",
+    "P. de Asturias", "R. de Murcia", "Melilla"
+  ]);
+  const AUTONOMICO_RE = [
+    /^tv3\b/i,
+    /^33\b/i,
+    /^3cat\b/i,
+    /^canal sur\b/i,
+    /^7tv andaluc/i,
+    /^etb/i,
+    /^tvg\b/i,
+    /^arag[oó]n tv\b/i,
+    /^arag[oó]n noticias\b/i,
+    /^castilla-la mancha media\b/i,
+    /^castilla-la mancha radio\b/i,
+    /^tv canaria\b/i,
+    /^la [12] canarias\b/i,
+    /^24h canarias\b/i,
+    /^canal extremadura\b/i,
+    /^ib3\b/i,
+    /^[aà] punt\b/i,
+    /^telemadrid\b/i,
+    /^la otra\b/i,
+    /^tpa\b/i,
+    /^7rm\b/i,
+    /^7 regi[oó]n de murcia\b/i,
+    /^navarra televisi/i,
+    /^tv rioja\b/i,
+    /^cyltv\b/i,
+    /^parlamento de navarra\b/i,
+    /^parlamento de la rioja\b/i,
+    /^cortes de castilla/i,
+    /^junta castilla/i,
+    /^junta general del principado/i,
+    /^consejo de gobierno de la regi/i,
+    /^euskadi meteo/i
+  ];
+  const GROUP_ORDER = [
+    "Generalistas", "Informativos", "Deportivos", "Infantiles",
+    "Autonómicos", "Regionales",
+    "Deportivos Int.", "Musicales", "Religiosos", "Eventuales",
+    "Int. Europa", "Int. América", "Int. Asia", "Int. África", "Int. Otros"
+  ];
   const TONES = ["#6e4634", "#3e5648", "#3d4c66", "#654838", "#534258", "#5a5140", "#4a4038"];
   const HOUR = 176;
   const EXTERNAL_CHANNELS = [
@@ -178,6 +224,27 @@
     return TONES[hash % TONES.length];
   }
 
+  function isAutonomicoName(name) {
+    const text = String(name || "");
+    return AUTONOMICO_RE.some((re) => re.test(text));
+  }
+
+  function remapCommunity(ch) {
+    if (!CA_GROUPS.has(ch.group)) {
+      return { ...ch, region: ch.region || "" };
+    }
+    return {
+      ...ch,
+      region: ch.group,
+      group: isAutonomicoName(ch.name) ? "Autonómicos" : "Regionales"
+    };
+  }
+
+  function sortGroups(groups) {
+    const rank = new Map(GROUP_ORDER.map((name, index) => [name, index]));
+    return [...groups].sort((a, b) => (rank.get(a) ?? 500) - (rank.get(b) ?? 500) || a.localeCompare(b, "es"));
+  }
+
   function logoHtml(name, src, className) {
     const url = safeUrl(src);
     const img = url ? `<img alt="" src="${esc(url)}" loading="lazy">` : "";
@@ -208,28 +275,44 @@
     return ordered;
   }
 
+  function orderByRegion(items, preferredRegions) {
+    const preferred = preferredRegions.map((name) => norm(name));
+    const buckets = preferred.map(() => []);
+    const rest = [];
+    items.forEach((ch) => {
+      const key = norm(ch.region || "");
+      const index = preferred.indexOf(key);
+      if (index >= 0) buckets[index].push(ch);
+      else rest.push(ch);
+    });
+    return [...buckets.flat(), ...rest];
+  }
+
   function mergeChannels(base) {
     const externals = EXTERNAL_CHANNELS.map((ch) => ({
       ...ch,
       urls: [],
-      youtube: null
+      youtube: null,
+      region: ""
     }));
     const byName = new Map();
-    [...base, ...externals].forEach((ch) => {
+    [...base.map(remapCommunity), ...externals].forEach((ch) => {
       const key = norm(ch.name);
-      if (!byName.has(key) || isExternal(ch)) byName.set(key, { ...ch, urls: (ch.urls || []).slice() });
+      if (!byName.has(key) || isExternal(ch)) {
+        byName.set(key, { ...ch, urls: (ch.urls || []).slice(), region: ch.region || "" });
+      }
     });
     const all = [...byName.values()];
-    const groups = [];
-    all.forEach((ch) => {
-      if (!groups.includes(ch.group)) groups.push(ch.group);
-    });
+    const groups = sortGroups([...new Set(all.map((ch) => ch.group))]);
     const ordered = [];
     groups.forEach((group) => {
-      const items = all.filter((ch) => ch.group === group);
-      if (group === "Generalistas") ordered.push(...orderGroup(items, FRONT_ORDER));
-      else if (group === "Infantiles") ordered.push(...orderGroup(items, INFANTILES_ORDER));
-      else ordered.push(...items);
+      let items = all.filter((ch) => ch.group === group);
+      if (group === "Generalistas") items = orderGroup(items, FRONT_ORDER);
+      else if (group === "Infantiles") items = orderGroup(items, INFANTILES_ORDER);
+      else if (group === "Autonómicos" || group === "Regionales") {
+        items = orderByRegion(items, ["Galicia"]);
+      }
+      ordered.push(...items);
     });
     return ordered.map((ch, index) => ({ ...ch, n: index + 1 }));
   }
@@ -252,7 +335,9 @@
       if (state.filter === "Principales" && !PRINCIPALES.has(ch.group)) return false;
       if (state.filter !== "Principales" && state.filter !== "Todos" && ch.group !== state.filter) return false;
       if (!query) return true;
-      return norm(ch.name).includes(query) || norm(ch.group).includes(query);
+      return norm(ch.name).includes(query)
+        || norm(ch.group).includes(query)
+        || norm(ch.region).includes(query);
     });
   }
 
@@ -445,11 +530,15 @@
     bar.style.width = `${pct}%`;
   }
 
+  function channelSubtitle(ch, pair) {
+    if (pair && pair.currentProg) return pair.currentProg[2];
+    if (isExternal(ch)) return ch.platform || "Externo";
+    if (ch.region) return ch.region;
+    return ch.group;
+  }
+
   function renderChips() {
-    const groups = [];
-    state.channels.forEach((ch) => {
-      if (!groups.includes(ch.group)) groups.push(ch.group);
-    });
+    const groups = sortGroups([...new Set(state.channels.map((ch) => ch.group))]);
     const items = ["Principales", "Todos", ...groups];
     $("chips").innerHTML = items.map((name) => (
       `<button type="button" data-filter="${esc(name)}" class="${name === state.filter ? "on" : ""}" aria-pressed="${name === state.filter}">${esc(name)}</button>`
@@ -468,9 +557,7 @@
     $("list").innerHTML = rows.map((ch) => {
       const pair = nowAndNext(ch.id, now);
       const badge = isExternal(ch) ? `<span class="badge-ext">Externo</span>` : "";
-      const sub = pair.currentProg
-        ? pair.currentProg[2]
-        : (isExternal(ch) ? (ch.platform || "Externo") : ch.group);
+      const sub = channelSubtitle(ch, pair);
       return `<button type="button" class="ch${ch.n === active ? " on" : ""}" data-n="${ch.n}">
         <span class="ch-num">${ch.n}</span>
         ${logoHtml(ch.name, ch.logo)}
@@ -506,7 +593,7 @@
       const sub = el.querySelector(".ch-sub");
       if (!ch || !sub) return;
       const pair = nowAndNext(ch.id, now);
-      sub.textContent = pair.currentProg ? pair.currentProg[2] : ch.group;
+      sub.textContent = channelSubtitle(ch, pair);
     });
     if (!$("osd").hidden) showOsd();
     if (document.body.classList.contains("guide")) positionNowLine();
