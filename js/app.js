@@ -47,7 +47,7 @@
   const GROUP_ORDER = [
     "Generalistas", "Informativos", "Deportivos", "Infantiles",
     "Autonómicos", "Regionales",
-    "Deportivos Int.", "Musicales", "Religiosos", "Eventuales",
+    "Deportivos Int.", "Musicales", "Rakuten", "Religiosos", "Eventuales",
     "Int. Europa", "Int. América", "Int. Asia", "Int. África", "Int. Otros"
   ];
   const TONES = ["#6e4634", "#3e5648", "#3d4c66", "#654838", "#534258", "#5a5140", "#4a4038"];
@@ -148,11 +148,362 @@
       logo: "https://graph.facebook.com/BoingTV/picture?width=200&height=200",
       platform: "Mediaset Infinity",
       external: "https://www.mitele.es/directo/boing"
+    },
+    {
+      name: "Atreseries",
+      id: "",
+      group: "Generalistas",
+      logo: "https://graph.facebook.com/Atreseries/picture?width=200&height=200",
+      platform: "Atresplayer",
+      external: "https://www.atresplayer.com/directos/atreseries/"
+    },
+    {
+      name: "Telemadrid",
+      id: "Telemadrid.TV",
+      group: "Autonómicos",
+      region: "C. de Madrid",
+      logo: "https://graph.facebook.com/telemadrid/picture?width=200&height=200",
+      platform: "TLMad+",
+      external: "https://www.tlmad.es/pages/live/telemadrid"
+    },
+    {
+      name: "La Otra",
+      id: "LaOtra.TV",
+      group: "Autonómicos",
+      region: "C. de Madrid",
+      logo: "https://pbs.twimg.com/profile_images/1279727978268839938/jSZUiboT_200x200.jpg",
+      platform: "TLMad+",
+      external: "https://www.tlmad.es/pages/live/laotra"
+    },
+    {
+      name: "TPA7",
+      id: "TPA.TV",
+      group: "Autonómicos",
+      region: "P. de Asturias",
+      logo: "https://graph.facebook.com/RTPAoficial/picture?width=200&height=200",
+      platform: "RTPA",
+      external: "https://www.rtpa.es/tpa-television"
+    },
+    {
+      name: "Navarra TV",
+      id: "NaTV.TV",
+      group: "Autonómicos",
+      region: "C. Foral de Navarra",
+      logo: "https://graph.facebook.com/NavarraTelevision/picture?width=200&height=200",
+      platform: "Navarra TV",
+      external: "https://www.navarratelevision.es/Directo"
+    },
+    {
+      name: "7 La Rioja",
+      id: "7Rioja.TV",
+      group: "Autonómicos",
+      region: "La Rioja",
+      logo: "https://graph.facebook.com/7riojatv/picture?width=200&height=200",
+      platform: "7 Rioja",
+      external: "https://www.7rioja.tv/Directo"
+    },
+    {
+      name: "CyLTV",
+      id: "",
+      group: "Autonómicos",
+      region: "Castilla y León",
+      logo: "https://graph.facebook.com/cyltelevision/picture?width=200&height=200",
+      platform: "CyLTV Play",
+      external: "https://www.cyltvplay.es/"
+    },
+    {
+      name: "La 7",
+      id: "",
+      group: "Autonómicos",
+      region: "R. de Murcia",
+      logo: "https://graph.facebook.com/7TelevisionRegiondeMurcia/picture?width=200&height=200",
+      platform: "La 7 TV",
+      external: "https://www.la7tv.es/"
+    }
+  ];
+  const EXTRA_CHANNELS = [
+    {
+      name: "À Punt",
+      id: "APUNT.TV",
+      group: "Autonómicos",
+      region: "C. Valenciana",
+      logo: "https://graph.facebook.com/apuntmedia/picture?width=200&height=200",
+      urls: [
+        "https://fastly.live.brightcove.com/1846756479408303045/eu-central-1/6057955885001/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJob3N0IjoiZWFxNWh4LmVncmVzcy53YzQ3bTEiLCJhY2NvdW50X2lkIjoiNjA1Nzk1NTg4NTAwMSIsImVobiI6ImZhc3RseS5saXZlLmJyaWdodGNvdmUuY29tIiwiaXNzIjoiYmxpdmUtcGxheWJhY2stc291cmNlLWFwaSIsInN1YiI6InBhdGhtYXB0b2tlbiIsImF1ZCI6WyI2MDU3OTU1ODg1MDAxIl0sImp0aSI6IjE4NDY3NTY0Nzk0MDgzMDMwNDUifQ.o6wb_VA-TVxl3ERgr7FKLlaTjY7smErmsf73QAydySE/playlist-hls-dvr.m3u8"
+      ],
+      external: "https://www.apuntmedia.es/directe/directe-tv_136_1392524.html",
+      platform: "À Punt"
+    },
+    {
+      name: "La 2 Cat",
+      id: "La2_CAT.TV",
+      group: "Autonómicos",
+      region: "Cataluña",
+      logo: "https://yt3.googleusercontent.com/ytc/AIdro_kqgHWySi5xprs1VFCNCX0IKNT8yXBLZC43JMoB8j0JUto=s200",
+      urls: ["https://rtvelivestream.rtve.es/rtvesec/cat/la2_cat_main_dvr.m3u8"]
+    },
+    {
+      name: "IB3 Global",
+      id: "IB3.TV",
+      group: "Autonómicos",
+      region: "Illes Balears",
+      logo: "https://graph.facebook.com/IB3org/picture?width=200&height=200",
+      youtube: "UCff_CBVJDTHP4wOHPjP5BMg",
+      external: "https://ib3.org/directe",
+      platform: "IB3"
+    },
+    {
+      name: "Xaloa Telebista",
+      id: "",
+      group: "Regionales",
+      region: "País Vasco",
+      logo: "https://graph.facebook.com/xaloatb/picture?width=200&height=200",
+      urls: ["https://streaming.mediacast.pro/live/xaloa/playlist.m3u8"]
+    },
+    {
+      name: "Cadena SER",
+      id: "",
+      group: "Informativos",
+      logo: "https://graph.facebook.com/cadenaser/picture?width=200&height=200",
+      youtube: "UCQ2Fej5pr1ipVeBWTX8Sc_Q"
+    },
+    {
+      name: "Sky News Reino Unido",
+      id: "",
+      group: "Int. Europa",
+      logo: "https://graph.facebook.com/skynews/picture?width=200&height=200",
+      urls: [
+        "https://dqco14bu26p3z.cloudfront.net/30505/89006005/hls/master.m3u8?ads.xumo_channelId=89006005&ads.xumo_streamId=89006005"
+      ]
+    },
+    {
+      name: "Bloomberg Europe",
+      id: "Bloom.TV",
+      group: "Int. Europa",
+      logo: "https://pbs.twimg.com/profile_images/991792042094354432/DG1Ruupb_200x200.jpg",
+      urls: ["https://www.bloomberg.com/media-manifest/streams/eu.m3u8"]
+    },
+    {
+      name: "France 24",
+      id: "France24.TV",
+      group: "Int. Europa",
+      logo: "https://graph.facebook.com/FRANCE24/picture?width=200&height=200",
+      youtube: "UCUdOoVWuWmgo1wByzcsyKDQ"
+    },
+    {
+      name: "Telemadrid Internacional",
+      id: "TeleMadridInt.TV",
+      group: "Int. Europa",
+      logo: "https://graph.facebook.com/telemadrid/picture?width=200&height=200",
+      youtube: "UCv2BcgqxHSrl2QQfIkjR5Eg",
+      external: "https://www.tlmad.es/pages/live/internacional",
+      platform: "TLMad+"
+    },
+    {
+      name: "Islas Canarias TV",
+      id: "",
+      group: "Int. Europa",
+      logo: "https://graph.facebook.com/IslasCanariasTelevision/picture?width=200&height=200",
+      urls: ["https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=17089&live=1"]
+    },
+    {
+      name: "NHK World Japón",
+      id: "",
+      group: "Int. Asia",
+      logo: "https://graph.facebook.com/nhkworld/picture?width=200&height=200",
+      urls: ["https://media-tyo.hls.nhkworld.jp/hls/w/live/master.m3u8"]
+    },
+    {
+      name: "NASA+",
+      id: "",
+      group: "Int. América",
+      logo: "https://graph.facebook.com/NASA/picture?width=200&height=200",
+      youtube: "UCLA_DiR1FfKNvjuUpBHmylQ"
+    },
+    {
+      name: "Rakuten Acción",
+      id: "",
+      group: "Rakuten",
+      urls: ["https://a9c57ec7ec5e4b7daeacc6316a0bb404.mediatailor.eu-west-1.amazonaws.com/v1/master/0547f18649bd788bec7b67b746e47670f558b6b2/production-LiveChannel-6069/master.m3u8"]
+    },
+    {
+      name: "Rakuten Cine Español",
+      id: "",
+      group: "Rakuten",
+      urls: ["https://3ed8837c27bf41dabe8e2627be2e57e6.mediatailor.eu-west-1.amazonaws.com/v1/master/0547f18649bd788bec7b67b746e47670f558b6b2/production-LiveChannel-6196/master.m3u8"]
+    },
+    {
+      name: "Rakuten Comedia",
+      id: "",
+      group: "Rakuten",
+      urls: ["https://71db867f03ce4d71a29e92155f07ab87.mediatailor.eu-west-1.amazonaws.com/v1/master/0547f18649bd788bec7b67b746e47670f558b6b2/production-LiveChannel-6180/master.m3u8"]
+    },
+    {
+      name: "Rakuten Crimen",
+      id: "",
+      group: "Rakuten",
+      urls: ["https://4ac0fe739f05408abf89ce151aced344.mediatailor.eu-west-1.amazonaws.com/v1/master/0547f18649bd788bec7b67b746e47670f558b6b2/production-LiveChannel-6220/master.m3u8"]
+    },
+    {
+      name: "Rakuten Drama",
+      id: "",
+      group: "Rakuten",
+      urls: ["https://a7089c89d85f453d850c4a1518b43076.mediatailor.eu-west-1.amazonaws.com/v1/master/0547f18649bd788bec7b67b746e47670f558b6b2/production-LiveChannel-6092/master.m3u8"]
+    },
+    {
+      name: "Rakuten Familia",
+      id: "",
+      group: "Rakuten",
+      urls: ["https://b0d59c8c98974e708e5ccb9a27cdfdfc.mediatailor.eu-west-1.amazonaws.com/v1/master/0547f18649bd788bec7b67b746e47670f558b6b2/production-LiveChannel-6205/master.m3u8"]
+    },
+    {
+      name: "Rakuten Romance",
+      id: "",
+      group: "Rakuten",
+      urls: ["https://4b95c0f7aa2b4cae80f6515600154151.mediatailor.eu-west-1.amazonaws.com/v1/master/0547f18649bd788bec7b67b746e47670f558b6b2/production-LiveChannel-6105/master.m3u8"]
+    },
+    {
+      name: "Rakuten Sci-Fi",
+      id: "",
+      group: "Rakuten",
+      urls: ["https://sci-fi-rakuten-tv-es.fast.rakuten.tv/v1/master/0547f18649bd788bec7b67b746e47670f558b6b2/production-LiveChannel-6740/master.m3u8"]
+    },
+    {
+      name: "Rakuten Thriller",
+      id: "",
+      group: "Rakuten",
+      urls: ["https://thriller-rakuten-tv-es.fast.rakuten.tv/v1/master/0547f18649bd788bec7b67b746e47670f558b6b2/production-LiveChannel-6480/master.m3u8"]
+    },
+    {
+      name: "Rakuten Top Movies",
+      id: "",
+      group: "Rakuten",
+      urls: ["https://ff335120300e4742a2b135ee9a9e7df8.mediatailor.eu-west-1.amazonaws.com/v1/master/0547f18649bd788bec7b67b746e47670f558b6b2/production-LiveChannel-5983/master.m3u8"]
+    },
+    {
+      name: "Vevo Latino",
+      id: "",
+      group: "Musicales",
+      urls: ["https://amg00056-amg00056c13-rakuten-es-3246.playouts.now.amagi.tv/playlist.m3u8"]
+    },
+    {
+      name: "Vevo Pop",
+      id: "",
+      group: "Musicales",
+      urls: ["https://amg00056-amg00056c10-rakuten-es-3242.playouts.now.amagi.tv/playlist.m3u8"]
+    },
+    {
+      name: "Beyblade",
+      id: "",
+      group: "Infantiles",
+      urls: ["https://amg01796-amg01796c8-rakuten-es-5333.playouts.now.amagi.tv/playlist/amg01796-fastmediafast-beybladees-rakutenes/playlist.m3u8"]
+    },
+    {
+      name: "Mr. Bean Anime",
+      id: "",
+      group: "Infantiles",
+      urls: ["https://amg00627-amg00627c30-rakuten-es-3990.playouts.now.amagi.tv/playlist/amg00627-banijayfast-mrbeanescc-rakutenes/playlist.m3u8"]
+    },
+    {
+      name: "Yu-Gi-Oh!",
+      id: "",
+      group: "Infantiles",
+      urls: ["https://amg01796-amg01796c18-rakuten-es-7491.playouts.now.amagi.tv/playlist/amg01796-fastmediafast-yugiohees-rakutenes/playlist.m3u8"]
+    },
+    {
+      name: "Zylo Cine Friki",
+      id: "",
+      group: "Rakuten",
+      urls: ["https://d2mr4fu91mjx9m.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-rb0tx75ojbc5u/CineFriki_ES.m3u8"]
+    },
+    {
+      name: "Zylo Cine Western",
+      id: "",
+      group: "Rakuten",
+      urls: ["https://d2nq34q0i1r3la.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-awohw8g217ho8/CineWestern_ES.m3u8"]
+    },
+    {
+      name: "Zylo Todo Novelas",
+      id: "",
+      group: "Rakuten",
+      urls: ["https://dtsszjrztq9ti.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-yshah5p4v45g1/ToDoNovelas_ES.m3u8"]
+    },
+    {
+      name: "People are Awesome",
+      id: "",
+      group: "Rakuten",
+      urls: ["https://jukin-peopleareawesome-2-es.samsung.wurl.tv/playlist.m3u8"]
+    },
+    {
+      name: "The Pet Collective",
+      id: "",
+      group: "Rakuten",
+      urls: ["https://the-pet-collective-international-es.samsung.wurl.tv/playlist.m3u8"]
+    },
+    {
+      name: "BBC Drama",
+      id: "",
+      group: "Rakuten",
+      urls: ["https://amg00793-amg00793c40-rakuten-es-5444.playouts.now.amagi.tv/playlist.m3u8"]
+    },
+    {
+      name: "CGTN Español",
+      id: "",
+      group: "Rakuten",
+      urls: ["https://amg01314-cgtn-amg01314c3-rakuten-uk-1318.playouts.now.amagi.tv/cgtn-es-rakuten/playlist.m3u8"]
+    },
+    {
+      name: "Crímenes Reales",
+      id: "",
+      group: "Rakuten",
+      urls: ["https://amg01796-amg01796c13-rakuten-gb-6739.playouts.now.amagi.tv/playlist.m3u8"]
+    },
+    {
+      name: "Estilo y Vida",
+      id: "",
+      group: "Rakuten",
+      urls: ["https://4a7284f0c8334835adb8f223c36fbc37.mediatailor.eu-west-1.amazonaws.com/v1/master/0547f18649bd788bec7b67b746e47670f558b6b2/production-LiveChannel-6232/master.m3u8"]
+    },
+    {
+      name: "Grjngo",
+      id: "",
+      group: "Rakuten",
+      urls: ["https://amogo-networx-grjngopelculasdeloeste-1-es.rakuten.wurl.tv/playlist.m3u8"]
+    },
+    {
+      name: "Ideas en 5 minutos",
+      id: "",
+      group: "Rakuten",
+      urls: ["https://soul-5mincraftspa-rakuten.amagi.tv/playlist.m3u8"]
+    },
+    {
+      name: "Lone Star",
+      id: "",
+      group: "Rakuten",
+      urls: ["https://lonestar-rakuten.amagi.tv/playlist.m3u8"]
+    },
+    {
+      name: "Los Gipsy Kings",
+      id: "",
+      group: "Rakuten",
+      urls: ["https://gipsy-kings-rakuten-tv-es.fast.rakuten.tv/v1/master/0547f18649bd788bec7b67b746e47670f558b6b2/production-LiveChannel-6752/master.m3u8"]
+    },
+    {
+      name: "Nature Time",
+      id: "",
+      group: "Rakuten",
+      urls: ["https://amg00090-amgnaturetimeemea-rakuten.amagi.tv/playlist.m3u8"]
+    },
+    {
+      name: "Travelxp",
+      id: "",
+      group: "Rakuten",
+      urls: ["https://travelxp-travelxp-5-eu.rakuten.wurl.tv/playlist.m3u8"]
     }
   ];
   const FRONT_ORDER = [
     "La 1", "La 2", "Antena 3", "Cuatro", "Telecinco", "laSexta",
-    "Neox", "Nova", "Mega", "FDF", "Energy", "Divinity", "Be Mad",
+    "Neox", "Nova", "Mega", "FDF", "Energy", "Divinity", "Be Mad", "Atreseries",
     "TRECE", "El Toro TV", "RNE para todos"
   ];
   const INFANTILES_ORDER = ["Clan", "Boing", "SX3"];
@@ -171,6 +522,7 @@
     playToken: 0,
     phase: "idle",
     overlayMode: "idle",
+    youtubePending: null,
     hls: null,
     osdTimer: null,
     digits: "",
@@ -255,6 +607,33 @@
     return Boolean(ch && ch.external);
   }
 
+  function isExternalOnly(ch) {
+    return Boolean(
+      ch
+      && ch.external
+      && !(ch.urls && ch.urls.length)
+      && !ch.youtube
+    );
+  }
+
+  function hasPlayableSource(ch) {
+    return Boolean((ch.urls && ch.urls.length) || ch.youtube);
+  }
+
+  function normalizeSupplement(ch) {
+    return {
+      name: ch.name,
+      id: ch.id || "",
+      group: ch.group,
+      region: ch.region || "",
+      logo: ch.logo || "",
+      urls: (ch.urls || []).slice(),
+      youtube: ch.youtube || null,
+      external: ch.external || null,
+      platform: ch.platform || null
+    };
+  }
+
   function orderGroup(items, preferred) {
     const map = new Map(items.map((ch) => [norm(ch.name), ch]));
     const ordered = [];
@@ -289,17 +668,24 @@
   }
 
   function mergeChannels(base) {
-    const externals = EXTERNAL_CHANNELS.map((ch) => ({
-      ...ch,
-      urls: [],
-      youtube: null,
-      region: ""
-    }));
+    const supplements = [
+      ...EXTERNAL_CHANNELS.map(normalizeSupplement),
+      ...EXTRA_CHANNELS.map(normalizeSupplement)
+    ];
     const byName = new Map();
-    [...base.map(remapCommunity), ...externals].forEach((ch) => {
+    [...base.map(remapCommunity), ...supplements].forEach((ch) => {
       const key = norm(ch.name);
-      if (!byName.has(key) || isExternal(ch)) {
-        byName.set(key, { ...ch, urls: (ch.urls || []).slice(), region: ch.region || "" });
+      const incoming = {
+        ...ch,
+        urls: (ch.urls || []).slice(),
+        region: ch.region || "",
+        youtube: ch.youtube || null,
+        external: ch.external || null,
+        platform: ch.platform || null
+      };
+      const prev = byName.get(key);
+      if (!prev || isExternalOnly(incoming) || hasPlayableSource(incoming)) {
+        byName.set(key, incoming);
       }
     });
     const all = [...byName.values()];
@@ -508,7 +894,7 @@
     $("osd-name").textContent = ch.name;
     $("osd-now").textContent = pair.currentProg
       ? `Ahora · ${pair.currentProg[2]}`
-      : (isExternal(ch) ? (ch.platform || "Externo") : ch.group);
+      : (isExternalOnly(ch) ? (ch.platform || "Externo") : ch.group);
     $("osd-next").textContent = pair.nextProg ? `Después · ${pair.nextProg[2]}` : "";
     updateProgress();
     clearTimeout(state.osdTimer);
@@ -532,7 +918,8 @@
 
   function channelSubtitle(ch, pair) {
     if (pair && pair.currentProg) return pair.currentProg[2];
-    if (isExternal(ch)) return ch.platform || "Externo";
+    if (isExternalOnly(ch)) return ch.platform || "Externo";
+    if (ch.youtube && !(ch.urls && ch.urls.length)) return "YouTube";
     if (ch.region) return ch.region;
     return ch.group;
   }
@@ -556,7 +943,7 @@
     const active = current() && current().n;
     $("list").innerHTML = rows.map((ch) => {
       const pair = nowAndNext(ch.id, now);
-      const badge = isExternal(ch) ? `<span class="badge-ext">Externo</span>` : "";
+      const badge = isExternalOnly(ch) ? `<span class="badge-ext">Externo</span>` : "";
       const sub = channelSubtitle(ch, pair);
       return `<button type="button" class="ch${ch.n === active ? " on" : ""}" data-n="${ch.n}">
         <span class="ch-num">${ch.n}</span>
@@ -611,16 +998,60 @@
     $("yt").replaceChildren();
   }
 
+  function isLocalFile() {
+    return location.protocol === "file:" || location.origin === "null";
+  }
+
+  function youtubeLiveUrl(id) {
+    return `https://www.youtube.com/channel/${encodeURIComponent(id)}/live`;
+  }
+
+  function openYoutube(id) {
+    const channelId = id || state.youtubePending || (current() && current().youtube);
+    if (!channelId) return;
+    window.open(youtubeLiveUrl(channelId), "_blank", "noopener,noreferrer");
+  }
+
+  function showYoutubeGate(ch, id) {
+    state.phase = "external";
+    state.overlayMode = "youtube";
+    state.youtubePending = id;
+    showToast("");
+    $("onair").hidden = true;
+    $("osd").hidden = true;
+    setSignal("YouTube");
+    const pair = nowAndNext(ch.id);
+    showOverlay(
+      "youtube",
+      ch.name,
+      "YouTube no permite el reproductor embebido desde un archivo local (error 153). Ábrelo en YouTube para ver el directo.",
+      "Abrir en YouTube",
+      {
+        platform: "YouTube",
+        now: pair.currentProg ? `Ahora · ${pair.currentProg[2]}` : "Directo en YouTube"
+      }
+    );
+    document.title = `${ch.name} · Mi Tele`;
+    try { localStorage.setItem("mltv:last", String(ch.n)); } catch (err) { /* ignore */ }
+  }
+
   function showYoutube(id) {
     if (!/^UC[\w-]{8,}$/.test(id)) return false;
     destroyHls();
     video.pause();
     video.removeAttribute("src");
     video.load();
+    hideYoutube();
+
+    // Desde file:// YouTube exige Referer HTTP y responde error 153.
+    if (isLocalFile()) return "gate";
+
     const frame = document.createElement("iframe");
     const mute = video.muted ? "&mute=1" : "";
-    frame.src = `https://www.youtube-nocookie.com/embed/live_stream?channel=${encodeURIComponent(id)}&autoplay=1&rel=0&modestbranding=1${mute}`;
-    frame.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
+    const origin = encodeURIComponent(location.origin);
+    frame.src = `https://www.youtube.com/embed/live_stream?channel=${encodeURIComponent(id)}&autoplay=1&playsinline=1&rel=0&modestbranding=1&origin=${origin}${mute}`;
+    frame.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
+    frame.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen";
     frame.allowFullscreen = true;
     frame.title = `Emisión de ${current().name} en YouTube`;
     $("yt").replaceChildren(frame);
@@ -784,13 +1215,24 @@
     const opts = options || {};
     const token = ++state.playToken;
     state.phase = "loading";
+    state.youtubePending = null;
     $("onair").hidden = true;
     hideOverlay();
     $("osd").hidden = true;
-    if (isExternal(ch)) {
+    if (isExternalOnly(ch)) {
       if (token !== state.playToken) return;
       showExternal(ch);
       return;
+    }
+    // Canales solo YouTube: no pasar por HLS ni por la lista oficial.
+    if (ch.youtube && !(ch.urls && ch.urls.length)) {
+      if (token !== state.playToken) return;
+      const yt = showYoutube(ch.youtube);
+      if (yt === "gate") {
+        showYoutubeGate(ch, ch.youtube);
+        return;
+      }
+      if (yt) return playing(ch, `youtube:${ch.youtube}`, false);
     }
     if (opts.rotate && ch.urls.length > 1) ch.urls.push(ch.urls.shift());
     const tried = new Set();
@@ -819,8 +1261,18 @@
       if (await tryPlay(extras[i], token)) return playing(ch, extras[i], true);
     }
     if (token !== state.playToken) return;
-    if (ch.youtube && showYoutube(ch.youtube)) {
-      return playing(ch, `youtube:${ch.youtube}`, true);
+    if (ch.youtube) {
+      const yt = showYoutube(ch.youtube);
+      if (yt === "gate") {
+        showYoutubeGate(ch, ch.youtube);
+        return;
+      }
+      if (yt) return playing(ch, `youtube:${ch.youtube}`, true);
+    }
+    if (token !== state.playToken) return;
+    if (ch.external) {
+      showExternal(ch);
+      return;
     }
     state.phase = "error";
     showToast("");
@@ -1195,7 +1647,8 @@
       else node.requestFullscreen().catch(() => {});
     });
     $("overlay-action").addEventListener("click", () => {
-      if (state.overlayMode === "external") openExternal(current());
+      if (state.overlayMode === "youtube") openYoutube();
+      else if (state.overlayMode === "external") openExternal(current());
       else if (state.overlayMode === "error") tune(current(), { rotate: true, force: true });
       else if (state.overlayMode === "gesture") video.play().then(hideOverlay).catch(() => {});
       else playChannel(state.current);
