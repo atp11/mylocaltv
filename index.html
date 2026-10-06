@@ -288,7 +288,20 @@
       font-size: 34px;
       letter-spacing: -0.03em;
     }
-    .overlay p { margin: 0 0 8px; color: var(--muted); max-width: 36ch; }
+    .overlay p { margin: 0 0 8px; color: var(--muted); max-width: 40ch; }
+    .overlay-meta {
+      margin: 0 0 6px !important;
+      color: var(--gold) !important;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    .overlay-now {
+      margin: 4px 0 10px !important;
+      color: var(--cream) !important;
+      font-size: 15px;
+    }
+    .overlay-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
     .overlay button, .detail button, .guide-tools > button {
       border: 0;
       background: var(--copper);
@@ -301,6 +314,18 @@
       background: transparent;
       color: var(--cream);
       border: 1px solid var(--line);
+    }
+    .badge-ext {
+      display: inline-block;
+      margin-left: 6px;
+      padding: 1px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(230, 201, 138, 0.35);
+      color: var(--gold);
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      vertical-align: 1px;
     }
 
     .remote {
@@ -660,9 +685,13 @@
             </div>
             <div id="overlay" class="overlay">
               <div id="overlay-logo"></div>
+              <p id="overlay-meta" class="overlay-meta" hidden></p>
               <h2 id="overlay-title">La 1</h2>
+              <p id="overlay-now" class="overlay-now" hidden></p>
               <p id="overlay-text">Elige un canal o dale al botón para empezar.</p>
-              <button type="button" id="overlay-action">Ver canal</button>
+              <div class="overlay-actions">
+                <button type="button" id="overlay-action">Ver canal</button>
+              </div>
             </div>
           </div>
         </div>

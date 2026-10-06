@@ -6,6 +6,110 @@
   const PRINCIPALES = new Set(["Generalistas", "Informativos", "Deportivos", "Infantiles"]);
   const TONES = ["#6e4634", "#3e5648", "#3d4c66", "#654838", "#534258", "#5a5140", "#4a4038"];
   const HOUR = 176;
+  const EXTERNAL_CHANNELS = [
+    {
+      name: "Antena 3",
+      id: "",
+      group: "Generalistas",
+      logo: "https://graph.facebook.com/antena3/picture?width=200&height=200",
+      platform: "Atresplayer",
+      external: "https://www.atresplayer.com/directos/antena3/"
+    },
+    {
+      name: "Cuatro",
+      id: "Cuatro.TV",
+      group: "Generalistas",
+      logo: "https://graph.facebook.com/cuatro/picture?width=200&height=200",
+      platform: "Mediaset Infinity",
+      external: "https://www.mediasetinfinity.es/directo/cuatro/"
+    },
+    {
+      name: "Telecinco",
+      id: "Telecinco.TV",
+      group: "Generalistas",
+      logo: "https://graph.facebook.com/tele5/picture?width=200&height=200",
+      platform: "Mediaset Infinity",
+      external: "https://www.mediasetinfinity.es/directo/telecinco/"
+    },
+    {
+      name: "laSexta",
+      id: "",
+      group: "Generalistas",
+      logo: "https://graph.facebook.com/laSexta/picture?width=200&height=200",
+      platform: "Atresplayer",
+      external: "https://www.atresplayer.com/directos/lasexta/"
+    },
+    {
+      name: "Neox",
+      id: "",
+      group: "Generalistas",
+      logo: "https://graph.facebook.com/Neox/picture?width=200&height=200",
+      platform: "Atresplayer",
+      external: "https://www.atresplayer.com/directos/neox/"
+    },
+    {
+      name: "Nova",
+      id: "",
+      group: "Generalistas",
+      logo: "https://graph.facebook.com/NovaTDT/picture?width=200&height=200",
+      platform: "Atresplayer",
+      external: "https://www.atresplayer.com/directos/nova/"
+    },
+    {
+      name: "Mega",
+      id: "",
+      group: "Generalistas",
+      logo: "https://graph.facebook.com/MegaTDT/picture?width=200&height=200",
+      platform: "Atresplayer",
+      external: "https://www.atresplayer.com/directos/mega/"
+    },
+    {
+      name: "FDF",
+      id: "FDF.TV",
+      group: "Generalistas",
+      logo: "https://graph.facebook.com/factoriadeficcion/picture?width=200&height=200",
+      platform: "Mediaset Infinity",
+      external: "https://www.mitele.es/directo/fdf"
+    },
+    {
+      name: "Energy",
+      id: "Energy.TV",
+      group: "Generalistas",
+      logo: "https://graph.facebook.com/E.EnergyTV/picture?width=200&height=200",
+      platform: "Mediaset Infinity",
+      external: "https://www.mitele.es/directo/energy"
+    },
+    {
+      name: "Divinity",
+      id: "Divinity.TV",
+      group: "Generalistas",
+      logo: "https://graph.facebook.com/divinityes/picture?width=200&height=200",
+      platform: "Mediaset Infinity",
+      external: "https://www.mitele.es/directo/divinity"
+    },
+    {
+      name: "Be Mad",
+      id: "Bemad.TV",
+      group: "Generalistas",
+      logo: "https://graph.facebook.com/BeMadTV/picture?width=200&height=200",
+      platform: "Mediaset Infinity",
+      external: "https://www.mitele.es/directo/bemad"
+    },
+    {
+      name: "Boing",
+      id: "Boing.TV",
+      group: "Infantiles",
+      logo: "https://graph.facebook.com/BoingTV/picture?width=200&height=200",
+      platform: "Mediaset Infinity",
+      external: "https://www.mitele.es/directo/boing"
+    }
+  ];
+  const FRONT_ORDER = [
+    "La 1", "La 2", "Antena 3", "Cuatro", "Telecinco", "laSexta",
+    "Neox", "Nova", "Mega", "FDF", "Energy", "Divinity", "Be Mad",
+    "TRECE", "El Toro TV", "RNE para todos"
+  ];
+  const INFANTILES_ORDER = ["Clan", "Boing", "SX3"];
 
   const $ = (id) => document.getElementById(id);
   const video = $("video");
@@ -78,6 +182,64 @@
     const url = safeUrl(src);
     const img = url ? `<img alt="" src="${esc(url)}" loading="lazy">` : "";
     return `<span class="logo ${className || ""}" style="--tone:${tone(name)}"><span>${esc(initials(name))}</span>${img}</span>`;
+  }
+
+  function isExternal(ch) {
+    return Boolean(ch && ch.external);
+  }
+
+  function orderGroup(items, preferred) {
+    const map = new Map(items.map((ch) => [norm(ch.name), ch]));
+    const ordered = [];
+    const used = new Set();
+    preferred.forEach((name) => {
+      const key = norm(name);
+      const ch = map.get(key);
+      if (!ch || used.has(key)) return;
+      ordered.push(ch);
+      used.add(key);
+    });
+    items.forEach((ch) => {
+      const key = norm(ch.name);
+      if (used.has(key)) return;
+      ordered.push(ch);
+      used.add(key);
+    });
+    return ordered;
+  }
+
+  function mergeChannels(base) {
+    const externals = EXTERNAL_CHANNELS.map((ch) => ({
+      ...ch,
+      urls: [],
+      youtube: null
+    }));
+    const byName = new Map();
+    [...base, ...externals].forEach((ch) => {
+      const key = norm(ch.name);
+      if (!byName.has(key) || isExternal(ch)) byName.set(key, { ...ch, urls: (ch.urls || []).slice() });
+    });
+    const all = [...byName.values()];
+    const groups = [];
+    all.forEach((ch) => {
+      if (!groups.includes(ch.group)) groups.push(ch.group);
+    });
+    const ordered = [];
+    groups.forEach((group) => {
+      const items = all.filter((ch) => ch.group === group);
+      if (group === "Generalistas") ordered.push(...orderGroup(items, FRONT_ORDER));
+      else if (group === "Infantiles") ordered.push(...orderGroup(items, INFANTILES_ORDER));
+      else ordered.push(...items);
+    });
+    return ordered.map((ch, index) => ({ ...ch, n: index + 1 }));
+  }
+
+  function stopPlayback() {
+    destroyHls();
+    hideYoutube();
+    video.pause();
+    video.removeAttribute("src");
+    video.load();
   }
 
   function current() {
@@ -188,13 +350,30 @@
     toast.textContent = text || "";
   }
 
-  function showOverlay(mode, title, text, action) {
+  function showOverlay(mode, title, text, action, extra) {
+    const meta = extra || {};
     state.overlayMode = mode;
     $("overlay").hidden = false;
     $("overlay-title").textContent = title;
     $("overlay-text").textContent = text;
     $("overlay-action").textContent = action;
     $("overlay-action").hidden = !action;
+    const metaEl = $("overlay-meta");
+    const nowEl = $("overlay-now");
+    if (meta.platform) {
+      metaEl.hidden = false;
+      metaEl.textContent = `Emisión en ${meta.platform}`;
+    } else {
+      metaEl.hidden = true;
+      metaEl.textContent = "";
+    }
+    if (meta.now) {
+      nowEl.hidden = false;
+      nowEl.textContent = meta.now;
+    } else {
+      nowEl.hidden = true;
+      nowEl.textContent = "";
+    }
     const ch = current();
     $("overlay-logo").innerHTML = ch ? logoHtml(ch.name, ch.logo) : "";
   }
@@ -203,16 +382,48 @@
     $("overlay").hidden = true;
   }
 
+  function openExternal(ch) {
+    const url = safeUrl(ch && ch.external);
+    if (!url) return;
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
+
+  function showExternal(ch) {
+    stopPlayback();
+    state.phase = "external";
+    showToast("");
+    $("onair").hidden = true;
+    $("osd").hidden = true;
+    $("play-btn").textContent = "Pausa";
+    setSignal(ch.platform || "Externo");
+    const pair = nowAndNext(ch.id);
+    const now = pair.currentProg ? `Ahora · ${pair.currentProg[2]}` : "";
+    const next = pair.nextProg ? `Después · ${pair.nextProg[2]}` : "";
+    showOverlay(
+      "external",
+      ch.name,
+      next
+        ? `${next}. Este canal no emite HLS en abierto: se abre en ${ch.platform}.`
+        : `Este canal no emite HLS en abierto. Ábrelo en ${ch.platform} para verlo con su señal oficial.`,
+      `Abrir en ${ch.platform}`,
+      { platform: ch.platform, now: now || (ch.group === "Generalistas" ? "Directo comercial" : ch.group) }
+    );
+    document.title = `${ch.name} · Mi Tele`;
+    try { localStorage.setItem("mltv:last", String(ch.n)); } catch (err) { /* ignore */ }
+  }
+
   function showOsd() {
     const ch = current();
-    if (!ch || state.phase !== "playing") return;
+    if (!ch || (state.phase !== "playing" && state.phase !== "external")) return;
     if (document.body.classList.contains("guide")) return;
     const pair = nowAndNext(ch.id);
     $("osd").hidden = false;
     $("osd-num").textContent = String(ch.n);
     $("osd-logo").innerHTML = logoHtml(ch.name, ch.logo);
     $("osd-name").textContent = ch.name;
-    $("osd-now").textContent = pair.currentProg ? `Ahora · ${pair.currentProg[2]}` : ch.group;
+    $("osd-now").textContent = pair.currentProg
+      ? `Ahora · ${pair.currentProg[2]}`
+      : (isExternal(ch) ? (ch.platform || "Externo") : ch.group);
     $("osd-next").textContent = pair.nextProg ? `Después · ${pair.nextProg[2]}` : "";
     updateProgress();
     clearTimeout(state.osdTimer);
@@ -256,11 +467,14 @@
     const active = current() && current().n;
     $("list").innerHTML = rows.map((ch) => {
       const pair = nowAndNext(ch.id, now);
-      const sub = pair.currentProg ? pair.currentProg[2] : ch.group;
+      const badge = isExternal(ch) ? `<span class="badge-ext">Externo</span>` : "";
+      const sub = pair.currentProg
+        ? pair.currentProg[2]
+        : (isExternal(ch) ? (ch.platform || "Externo") : ch.group);
       return `<button type="button" class="ch${ch.n === active ? " on" : ""}" data-n="${ch.n}">
         <span class="ch-num">${ch.n}</span>
         ${logoHtml(ch.name, ch.logo)}
-        <span><span class="ch-name">${esc(ch.name)}</span><span class="ch-sub">${esc(sub)}</span></span>
+        <span><span class="ch-name">${esc(ch.name)}${badge}</span><span class="ch-sub">${esc(sub)}</span></span>
       </button>`;
     }).join("");
     const on = $("list").querySelector(".ch.on");
@@ -468,8 +682,8 @@
         state.officialAt = Date.now();
         const changed = applyOfficial(state.officialRows);
         setNote(changed
-          ? "Lista contrastada. Hay señales más nuevas listas por si alguna caduca."
-          : "Lista contrastada con los canales en abierto de TDTChannels.");
+          ? "Lista contrastada. Atresmedia y Mediaset van como externos a su web oficial."
+          : "Lista contrastada. Atresmedia y Mediaset van como externos a su web oficial.");
         return state.officialRows;
       })
       .catch(() => {
@@ -486,6 +700,11 @@
     $("onair").hidden = true;
     hideOverlay();
     $("osd").hidden = true;
+    if (isExternal(ch)) {
+      if (token !== state.playToken) return;
+      showExternal(ch);
+      return;
+    }
     if (opts.rotate && ch.urls.length > 1) ch.urls.push(ch.urls.shift());
     const tried = new Set();
     const locals = ch.urls.slice();
@@ -889,7 +1108,8 @@
       else node.requestFullscreen().catch(() => {});
     });
     $("overlay-action").addEventListener("click", () => {
-      if (state.overlayMode === "error") tune(current(), { rotate: true, force: true });
+      if (state.overlayMode === "external") openExternal(current());
+      else if (state.overlayMode === "error") tune(current(), { rotate: true, force: true });
       else if (state.overlayMode === "gesture") video.play().then(hideOverlay).catch(() => {});
       else playChannel(state.current);
     });
@@ -992,7 +1212,8 @@
   }
 
   function init() {
-    state.channels = (window.MLTV_CHANNELS || []).map((ch) => ({ ...ch, urls: ch.urls.slice(), youtube: null }));
+    const base = (window.MLTV_CHANNELS || []).map((ch) => ({ ...ch, urls: ch.urls.slice(), youtube: null }));
+    state.channels = mergeChannels(base);
     state.epg = window.MLTV_EPG || {};
     state.epgUpdated = window.MLTV_EPG_UPDATED || 0;
     loadStoredSources();
@@ -1020,6 +1241,7 @@
     document.querySelectorAll("img").forEach((img) => {
       img.addEventListener("error", () => img.remove());
     });
+    setNote("Incluye Atresmedia y Mediaset como externos (Atresplayer / mitele).");
     officialData(false);
     hydrateEpg();
   }
