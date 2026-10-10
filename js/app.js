@@ -3,6 +3,9 @@
 
   const OFFICIAL = "https://raw.githubusercontent.com/LaQuay/TDTChannels/master/TELEVISION.md";
   const EPG_URL = "https://www.tdtchannels.com/epg/TV.json";
+  // TDTChannels no envía CORS; desde file:// se lee vía Jina (permite Origin null).
+  const EPG_BRIDGE = `https://r.jina.ai/${EPG_URL}`;
+  const EPG_MAX_AGE = 6 * 60 * 60;
   const PRINCIPALES = new Set(["Generalistas", "Informativos", "Deportivos", "Infantiles"]);
   const CA_GROUPS = new Set([
     "C. de Madrid", "Castilla-La Mancha", "Castilla y León", "C. Valenciana",
@@ -1513,6 +1516,33 @@
     return epg;
   }
 
+  function parseEpgPayload(text) {
+    const trimmed = String(text || "").trim();
+    if (!trimmed) throw new Error("EPG vacía");
+    if (trimmed.startsWith("[") || trimmed.startsWith("{")) return JSON.parse(trimmed);
+    const marker = "Markdown Content:";
+    const at = trimmed.indexOf(marker);
+    if (at >= 0) return JSON.parse(trimmed.slice(at + marker.length).trim());
+    const start = trimmed.indexOf("[{");
+    if (start >= 0) return JSON.parse(trimmed.slice(start));
+    throw new Error("EPG ilegible");
+  }
+
+  async function fetchEpgData() {
+    try {
+      const res = await fetch(EPG_URL, { cache: "no-cache", mode: "cors" });
+      if (res.ok) return res.json();
+    } catch (err) { /* CORS / file:// */ }
+
+    const res = await fetch(EPG_BRIDGE, {
+      cache: "no-cache",
+      mode: "cors",
+      headers: { Accept: "text/plain,*/*" }
+    });
+    if (!res.ok) throw new Error(String(res.status));
+    return parseEpgPayload(await res.text());
+  }
+
   function idb() {
     return new Promise((resolve, reject) => {
       const req = indexedDB.open("mltv", 1);
@@ -1549,23 +1579,35 @@
     else $("guide-meta").textContent = guideStamp();
   }
 
-  async function hydrateEpg() {
+  async function hydrateEpg(options) {
+    const opts = options || {};
+    const force = Boolean(opts.force);
     const cached = await idbGet("epg");
     if (cached && cached.epg && cached.updated > state.epgUpdated) {
-      useEpg(cached.epg, cached.updated, true);
+      useEpg(cached.epg, cached.updated, false);
     }
+
+    const now = Math.floor(Date.now() / 1000);
+    if (!force && state.epgUpdated && now - state.epgUpdated < EPG_MAX_AGE) {
+      $("guide-meta").textContent = guideStamp();
+      return;
+    }
+
     const button = $("guide-refresh");
     button.disabled = true;
+    const prev = $("guide-meta").textContent;
+    $("guide-meta").textContent = "Actualizando guía…";
     try {
-      const res = await fetch(EPG_URL, { cache: "no-cache" });
-      if (!res.ok) throw new Error(String(res.status));
-      const data = await res.json();
+      const data = await fetchEpgData();
+      if (!Array.isArray(data)) throw new Error("formato");
       const epg = compactEpg(data);
       const updated = Math.floor(Date.now() / 1000);
       useEpg(epg, updated, true);
       await idbSet("epg", { updated, epg });
     } catch (err) {
-      $("guide-meta").textContent = guideStamp();
+      $("guide-meta").textContent = state.epgUpdated
+        ? `${guideStamp()} · no se pudo actualizar`
+        : (prev || "Sin guía · no se pudo actualizar");
     } finally {
       button.disabled = false;
     }
@@ -1660,7 +1702,7 @@
       renderGuide();
       requestAnimationFrame(scrollGuideToNow);
     });
-    $("guide-refresh").addEventListener("click", hydrateEpg);
+    $("guide-refresh").addEventListener("click", () => hydrateEpg({ force: true }));
     $("days").addEventListener("click", (event) => {
       const button = event.target.closest("[data-day]");
       if (!button) return;

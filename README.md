@@ -50,10 +50,12 @@ Solo se incluyen emisiones en abierto o con HLS público. No se añaden feeds de
 
 ## Guía de programación
 
-- Fuente principal: `https://www.tdtchannels.com/epg/TV.json`.
-- Hay una copia embebida en `js/epg.js` para el primer arranque; luego se intenta actualizar en vivo (y se guarda en IndexedDB).
+- Fuente: `https://www.tdtchannels.com/epg/TV.json`.
+- Copia embebida de respaldo: `js/epg.js`.
+- Al abrir (y con **Actualizar guía**) la tele descarga la EPG en el navegador. TDTChannels no permite CORS desde `file://`, así que si el acceso directo falla se usa un puente (`r.jina.ai`) que sí acepta origen local. El resultado se guarda en IndexedDB y no se vuelve a pedir hasta pasadas unas 6 horas (el botón fuerza la descarga).
+- Opcional, sin navegador: `node update-epg.js` regenera `js/epg.js`.
 - La guía se enlaza por el `id` del canal (p. ej. `La1.TV`). Si un canal no tiene `id` o no está en esa EPG, no tendrá parrilla.
-- Los canales Rakuten / Samsung / Vevo suelen quedar sin guía: TDTChannels no los cubre y las APIs de esos servicios no son usables desde `file://` por CORS.
+- Los canales Rakuten / Samsung / Vevo suelen quedar sin guía: TDTChannels no los cubre.
 
 ## Limitaciones conocidas
 
@@ -62,7 +64,7 @@ Solo se incluyen emisiones en abierto o con HLS público. No se añaden feeds de
 - **Pluto TV / Tivify embebidos:** no; CORS o plataforma cerrada. No se añaden como HLS interno.
 - **Atresmedia / Mediaset:** sin HLS estable en abierto; van como externos a Atresplayer / Mitele / Infinity.
 - Algunas señales regionales o internacionales pueden caer, geo-bloquearse o exigir un clic de reproducción del navegador.
-- La EPG en vivo depende de que TDTChannels responda; si falla, se usa la guía guardada.
+- La actualización dinámica de la guía depende de la red y del puente CORS; si falla, se usa la última copia en IndexedDB o `js/epg.js`.
 
 ## Estructura
 
