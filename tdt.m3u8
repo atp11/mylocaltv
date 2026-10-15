@@ -1,8 +1,8 @@
 #EXTM3U @LaQuay https://github.com/LaQuay/TDTChannels
 #EXTM3U url-tvg="https://www.tdtchannels.com/epg/TV.xml.gz"
-#EXTINF:-1 tvg-id="La1.TV" tvg-logo="https://pbs.twimg.com/profile_images/2008842210414915584/zIp_go25_200x200.jpg" group-title="Generalistas" tvg-name="La 1",La 1
+#EXTINF:-1 tvg-id="La1.TV" tvg-logo="https://graph.facebook.com/la1detve/picture?width=200&height=200" group-title="Generalistas" tvg-name="La 1",La 1
 https://rtvelivestream.rtve.es/rtvesec/la1/la1_main_dvr.m3u8
-#EXTINF:-1 tvg-id="La1.TV" tvg-logo="https://pbs.twimg.com/profile_images/2008842210414915584/zIp_go25_200x200.jpg" group-title="Generalistas" tvg-name="La 1",La 1
+#EXTINF:-1 tvg-id="La1.TV" tvg-logo="https://graph.facebook.com/la1detve/picture?width=200&height=200" group-title="Generalistas" tvg-name="La 1",La 1
 https://dghxc56urunop.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-zabn6k211oedh/La1ES.m3u8
 #EXTINF:-1 tvg-id="La2.TV" tvg-logo="https://yt3.googleusercontent.com/ytc/AIdro_kqgHWySi5xprs1VFCNCX0IKNT8yXBLZC43JMoB8j0JUto=s200" group-title="Generalistas" tvg-name="La 2",La 2
 https://rtvelivestream.rtve.es/rtvesec/la2/la2_main_dvr.m3u8
@@ -368,7 +368,7 @@ https://cartv-streaming.aranova.es/hls/live/anoticias_canal3.m3u8
 https://d1oyt3v08gcy18.cloudfront.net/index-events.m3u8
 #EXTINF:-1 tvg-id="Canarias.TV" tvg-logo="https://graph.facebook.com/188600904655/picture?width=200&height=200" group-title="Canarias" tvg-name="TV Canaria (RTVC)",TV Canaria (RTVC)
 https://d2q93scm3qt8zp.cloudfront.net/index-events.m3u8
-#EXTINF:-1 tvg-id="La1_CAN.TV" tvg-logo="https://pbs.twimg.com/profile_images/2008842210414915584/zIp_go25_200x200.jpg" group-title="Canarias" tvg-name="La 1 Canarias",La 1 Canarias
+#EXTINF:-1 tvg-id="La1_CAN.TV" tvg-logo="https://graph.facebook.com/la1detve/picture?width=200&height=200" group-title="Canarias" tvg-name="La 1 Canarias",La 1 Canarias
 https://rtvelivestream.rtve.es/rtvesec/can/la1_can_main_dvr.m3u8
 #EXTINF:-1 tvg-id="La2_CAN.TV" tvg-logo="https://yt3.googleusercontent.com/ytc/AIdro_kqgHWySi5xprs1VFCNCX0IKNT8yXBLZC43JMoB8j0JUto=s200" group-title="Canarias" tvg-name="La 2 Canarias",La 2 Canarias
 https://rtvelivestream.rtve.es/rtvesec/can/la2_can_main_dvr.m3u8
@@ -480,7 +480,7 @@ https://fast-tailor.3catdirectes.cat/v1/channel/ccma-channel2/hls.m3u8
 https://fast-tailor.3catdirectes.cat/v1/channel/vinagreta/hls.m3u8
 #EXTINF:-1 tvg-logo="https://graph.facebook.com/som3Cat/picture?width=200&height=200" group-title="Cataluña" tvg-name="3Cat Verdi Clàssics",3Cat Verdi Clàssics
 https://directes-tv-es.3catdirectes.cat/live-content/tem1-hls/master.m3u8
-#EXTINF:-1 tvg-id="La1_CAT.TV" tvg-logo="https://pbs.twimg.com/profile_images/2008842210414915584/zIp_go25_200x200.jpg" group-title="Cataluña" tvg-name="La 1 Catalunya",La 1 Catalunya
+#EXTINF:-1 tvg-id="La1_CAT.TV" tvg-logo="https://graph.facebook.com/la1detve/picture?width=200&height=200" group-title="Cataluña" tvg-name="La 1 Catalunya",La 1 Catalunya
 https://rtvelivestream.rtve.es/rtvesec/cat/la1_cat_main_dvr.m3u8
 #EXTINF:-1 tvg-id="La2_CAT.TV" tvg-logo="https://yt3.googleusercontent.com/ytc/AIdro_kqgHWySi5xprs1VFCNCX0IKNT8yXBLZC43JMoB8j0JUto=s200" group-title="Cataluña" tvg-name="La 2 Catalunya",La 2 Catalunya
 https://rtvelivestream.rtve.es/rtvesec/cat/la2_cat_main_dvr.m3u8

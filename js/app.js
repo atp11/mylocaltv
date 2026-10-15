@@ -600,8 +600,19 @@
     return [...groups].sort((a, b) => (rank.get(a) ?? 500) - (rank.get(b) ?? 500) || a.localeCompare(b, "es"));
   }
 
-  function logoHtml(name, src, className) {
+  const LOGO_FIXES = {
+    // Avatar antiguo de X/Twitter (404); logo oficial de La 1 en Facebook.
+    "https://pbs.twimg.com/profile_images/2008842210414915584/zIp_go25_200x200.jpg":
+      "https://graph.facebook.com/la1detve/picture?width=200&height=200"
+  };
+
+  function resolveLogo(src) {
     const url = safeUrl(src);
+    return url ? (LOGO_FIXES[url] || url) : "";
+  }
+
+  function logoHtml(name, src, className) {
+    const url = resolveLogo(src);
     const img = url ? `<img alt="" src="${esc(url)}" loading="lazy">` : "";
     return `<span class="logo ${className || ""}" style="--tone:${tone(name)}"><span>${esc(initials(name))}</span>${img}</span>`;
   }
@@ -1169,7 +1180,7 @@
           if (safeUrl(url) && !pool.includes(url)) pool.push(url);
         });
         if (!ch.youtube && item.youtube) ch.youtube = item.youtube;
-        if (!ch.logo && item.logo) ch.logo = item.logo;
+        if (item.logo) ch.logo = item.logo;
       });
       if (!pool.length) return;
       const merged = [];
