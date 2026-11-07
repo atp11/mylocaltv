@@ -226,6 +226,15 @@
   ];
   const EXTRA_CHANNELS = [
     {
+      name: "La Séptima",
+      id: "LaSeptima.TV",
+      group: "Generalistas",
+      logo: "https://pbs.twimg.com/profile_images/2074450480743297024/UTvLXCSQ_200x200.jpg",
+      youtube: "UCOCGPFW1UqPP9zdol7vEK1A",
+      external: "https://laseptima.com/la-septima-tv-directo/",
+      platform: "La Séptima"
+    },
+    {
       name: "À Punt",
       id: "APUNT.TV",
       group: "Autonómicos",
@@ -507,7 +516,7 @@
   const FRONT_ORDER = [
     "La 1", "La 2", "Antena 3", "Cuatro", "Telecinco", "laSexta",
     "Neox", "Nova", "Mega", "FDF", "Energy", "Divinity", "Be Mad", "Atreseries",
-    "TRECE", "El Toro TV", "RNE para todos"
+    "TRECE", "El Toro TV", "La Séptima", "RNE para todos"
   ];
   const INFANTILES_ORDER = ["Clan", "Boing", "SX3"];
 
