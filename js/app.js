@@ -535,6 +535,9 @@
     phase: "idle",
     overlayMode: "idle",
     youtubePending: null,
+    youtubeApiTask: null,
+    youtubePlayer: null,
+    youtubeLiveTimer: null,
     hls: null,
     osdTimer: null,
     digits: "",
@@ -1017,6 +1020,14 @@
   }
 
   function hideYoutube() {
+    clearTimeout(state.youtubeLiveTimer);
+    state.youtubeLiveTimer = null;
+    try {
+      if (state.youtubePlayer && typeof state.youtubePlayer.destroy === "function") {
+        state.youtubePlayer.destroy();
+      }
+    } catch (err) { /* ignore */ }
+    state.youtubePlayer = null;
     $("yt").hidden = true;
     $("yt").replaceChildren();
   }
@@ -1033,6 +1044,64 @@
     const channelId = id || state.youtubePending || (current() && current().youtube);
     if (!channelId) return;
     window.open(youtubeLiveUrl(channelId), "_blank", "noopener,noreferrer");
+  }
+
+  function ensureYoutubeApi() {
+    if (window.YT && window.YT.Player) return Promise.resolve();
+    if (state.youtubeApiTask) return state.youtubeApiTask;
+    state.youtubeApiTask = new Promise((resolve, reject) => {
+      const prev = window.onYouTubeIframeAPIReady;
+      window.onYouTubeIframeAPIReady = () => {
+        if (typeof prev === "function") prev();
+        resolve();
+      };
+      const script = document.createElement("script");
+      script.src = "https://www.youtube.com/iframe_api";
+      script.async = true;
+      script.onerror = () => reject(new Error("YouTube API"));
+      document.head.appendChild(script);
+    });
+    return state.youtubeApiTask;
+  }
+
+  function seekYoutubeLive(player, attempt) {
+    if (!player || typeof player.seekTo !== "function") return;
+    const n = attempt || 0;
+    clearTimeout(state.youtubeLiveTimer);
+    try {
+      const duration = Number(player.getDuration && player.getDuration());
+      if (Number.isFinite(duration) && duration > 1) {
+        player.seekTo(duration, true);
+        // Repetir: el DVR a veces alarga la ventana justo al arrancar.
+        if (n < 3) {
+          state.youtubeLiveTimer = setTimeout(() => seekYoutubeLive(player, n + 1), 1800);
+        }
+        return;
+      }
+    } catch (err) { /* ignore */ }
+    if (n < 10) {
+      state.youtubeLiveTimer = setTimeout(() => seekYoutubeLive(player, n + 1), 700);
+    }
+  }
+
+  function bindYoutubeLive(frame) {
+    ensureYoutubeApi().then(() => {
+      if (!frame.isConnected || !window.YT || !window.YT.Player) return;
+      let armed = true;
+      state.youtubePlayer = new window.YT.Player(frame, {
+        events: {
+          onReady: (event) => {
+            try { event.target.playVideo(); } catch (err) { /* ignore */ }
+            if (armed) seekYoutubeLive(event.target, 0);
+          },
+          onStateChange: (event) => {
+            if (!armed || event.data !== window.YT.PlayerState.PLAYING) return;
+            armed = false;
+            seekYoutubeLive(event.target, 0);
+          }
+        }
+      });
+    }).catch(() => {});
   }
 
   function showYoutubeGate(ch, id) {
@@ -1065,6 +1134,8 @@
     video.removeAttribute("src");
     video.load();
     hideYoutube();
+    clearTimeout(state.youtubeLiveTimer);
+    state.youtubePlayer = null;
 
     // Desde file:// YouTube exige Referer HTTP y responde error 153.
     if (isLocalFile()) return "gate";
@@ -1072,13 +1143,15 @@
     const frame = document.createElement("iframe");
     const mute = video.muted ? "&mute=1" : "";
     const origin = encodeURIComponent(location.origin);
-    frame.src = `https://www.youtube.com/embed/live_stream?channel=${encodeURIComponent(id)}&autoplay=1&playsinline=1&rel=0&modestbranding=1&origin=${origin}${mute}`;
+    // live_stream + API: al arrancar saltamos al borde en directo (no al inicio del DVR).
+    frame.src = `https://www.youtube.com/embed/live_stream?channel=${encodeURIComponent(id)}&autoplay=1&playsinline=1&rel=0&modestbranding=1&enablejsapi=1&origin=${origin}${mute}`;
     frame.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
     frame.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen";
     frame.allowFullscreen = true;
     frame.title = `Emisión de ${current().name} en YouTube`;
     $("yt").replaceChildren(frame);
     $("yt").hidden = false;
+    bindYoutubeLive(frame);
     return true;
   }
 
